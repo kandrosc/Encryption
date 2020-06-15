@@ -19,7 +19,6 @@ def decrypt(name,image,keyword,grid):
                 green=grid[count%3][(green-c[count%3])%256]
                 blue=grid[count%3][(blue-c[count%3])%256]
                 c[count%3]=c[count%3]+(ord(keyword[count])-96)
-                #grid[count%3]=shift(grid[count%3],(ord(keyword[count])-96))
                 count+=1
             pixels[i,j]=(red,green,blue)        
     image.show()
@@ -27,8 +26,6 @@ def decrypt(name,image,keyword,grid):
 def encrypt(name,image,keyword,grid):
     pixels=image.load()
     c=[0]*3
-    '''for i in range(len(keyword)):
-        grid[i%3]=shift(grid[i%3],(ord(keyword[i])-96))'''
     for i in range(0,len(keyword),3):
         for j in range(3):
             c[j]=c[j]+ord(keyword[i+j])-96  
@@ -40,7 +37,6 @@ def encrypt(name,image,keyword,grid):
             green=pixels[i,j][1]
             blue=pixels[i,j][2]
             for k in range(len(grid)-1,-1,-1):
-                #grid[count%3]=shift(grid[count%3],-(ord(keyword[count])-96))
                 c[count%3]=c[count%3]-(ord(keyword[count])-96)
                 red=(grid[count%3].index(red)+c[count%3])%256
                 green=(grid[count%3].index(green)+c[count%3])%256
