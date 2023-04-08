@@ -76,8 +76,8 @@ if __name__=="__main__":
             inp = f.read()
         rotors = [[] for _ in range(4)]
         with open(key_file,'rb') as f:
-            for i, b in enumerate(f.read().decode('utf-8')):
-                rotors[i//256].append(ord(b))
+            for i, b in enumerate(f.read()):
+                rotors[i//256].append(b)
         # Encrypt / decrypt based on parameters
         output = decrypt(inp, rotors) if will_decrypt else encrypt(inp, rotors)
         out_file = inp_file if inplace else get_output_filename(inp_file, will_decrypt)
