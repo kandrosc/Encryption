@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
@@ -91,6 +92,8 @@ int validate_input(int argc, char *argv[], FILE **key, FILE **file) {
     // Check to see if the path_to_file and _path_to_key filepaths are valid
     if (!check_file(key, argv[2], "key") || 
         !check_file(file, argv[1], "file to encrypt/decrypt")) {
+        fclose(*key);
+        fclose(*file);
         return -1;
     }
 
@@ -140,12 +143,31 @@ int main(int argc, char *argv[]) {
     FILE *key;
     FILE *file;
 
+    char *rotors;
+    long file_length;
+
     int val = validate_input(argc, argv, &key, &file);
     if (val == -1) {
         printf(help_str);
         return 1;
     }
 
+    // Read key file
+    fseek(key, 0, SEEK_END);
+    file_length = ftell(key);
+    rewind(key);
+    if(file_length % 256 != 0) {
+        println("Key file has invalid format. File length must be a multiple of 256.");
+        fclose(key);
+        fclose(file);
+        return 1;
+    }
+
+    rotors = (char *)malloc(file_length * sizeof(char));
+    fread(rotors, sizeof(char), file_length, key);
+
+    // Perform closing actions
+    free(rotors);
     fclose(key);
     fclose(file);
     return 0;
